@@ -1,0 +1,8 @@
+// Place your settings in this file to overwrite default and user settings.
+{
+	"files.autoSave": "afterDelay",
+	"html.format.wrapAttributes": "force-aligned",
+	"editor.tabSize": 2,
+	"editor.mouseWheelZoom": true,
+	"window.zoomLevel": 3.0
+}
