@@ -1,12 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 
-import { Subscription } from 'rxjs';
+import { Observable } from 'rxjs';
 
 import { Product } from '../product';
-import { ProductService } from '../product.service';
 import { Store } from '@ngrx/store';
 import { State } from '../state/product.reducer';
-import { getCurrentProduct, getShowProductCode } from '../state/product.selectors';
+import * as ProductSelect from '../state/product.selectors';
 import * as ProductActions from '../state/product.actions';
 
 @Component({
@@ -16,32 +15,27 @@ import * as ProductActions from '../state/product.actions';
 })
 export class ProductListComponent implements OnInit {
   pageTitle = 'Products';
-  errorMessage: string;
 
   displayCode: boolean;
 
-  products: Product[];
+  products$: Observable<Product[]>;
+  selectedProduct$: Observable<Product>;
+  displayCode$: Observable<boolean>;
+  errorMessage$: Observable<string>;
 
-  // Used to highlight the selected product in the list
-  selectedProduct: Product | null;
-  sub: Subscription;
-
-  constructor(private store: Store<State>, private productService: ProductService) { }
+  constructor(private store: Store<State>) { }
 
   ngOnInit(): void {
-    this.store.select(getCurrentProduct).subscribe(
-      getCurrentProduct => this.selectedProduct = getCurrentProduct
-    );
 
-    this.productService.getProducts().subscribe({
-      next: (products: Product[]) => this.products = products,
-      error: err => this.errorMessage = err
-    });
+    this.products$ = this.store.select(ProductSelect.getProducts);
+    this.errorMessage$ = this.store.select(ProductSelect.getError);
+
+    this.store.dispatch(ProductActions.loadProducts());    
+
+    this.selectedProduct$ = this.store.select(ProductSelect.getCurrentProduct);
 
     // TODO: Unsubscribe
-    this.store.select(getShowProductCode).subscribe(
-      showProductCode => this.displayCode = showProductCode
-    );
+    this.displayCode$ = this.store.select(ProductSelect.getShowProductCode);
   }
 
   checkChanged(): void {
