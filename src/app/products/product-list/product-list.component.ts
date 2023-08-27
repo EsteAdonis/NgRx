@@ -16,8 +16,6 @@ import * as ProductActions from '../state/product.actions';
 export class ProductListComponent implements OnInit {
   pageTitle = 'Products';
 
-  displayCode: boolean;
-
   products$: Observable<Product[]>;
   selectedProduct$: Observable<Product>;
   displayCode$: Observable<boolean>;
@@ -28,6 +26,7 @@ export class ProductListComponent implements OnInit {
   ngOnInit(): void {
 
     this.products$ = this.store.select(ProductSelect.getProducts);
+
     this.errorMessage$ = this.store.select(ProductSelect.getError);
 
     this.store.dispatch(ProductActions.loadProducts());    
@@ -39,9 +38,7 @@ export class ProductListComponent implements OnInit {
   }
 
   checkChanged(): void {
-    this.store.dispatch(
-      ProductActions.toggleProductCode() // This is the action
-    );
+    this.store.dispatch(ProductActions.toggleProductCode()); // This is the action
   }
 
   newProduct(): void {
@@ -49,7 +46,7 @@ export class ProductListComponent implements OnInit {
   }
 
   productSelected(product: Product): void {
-    this.store.dispatch(ProductActions.setCurrentProduct({ product }));
+    this.store.dispatch(ProductActions.setCurrentProduct({ currentProductId: product.id }));
   }
 
 }
