@@ -47,7 +47,6 @@ export const updateProductFailure = createAction(
   props<{ error: string }>()
 );
 
-
 export const createProduct = createAction(
   '[Product] Create Product',
   props<{ product: Product }>()
